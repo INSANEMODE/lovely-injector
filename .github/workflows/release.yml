@@ -90,6 +90,7 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - name: Install Anroid ADK
+        shell: bash
         run: |
           # Set an environment variable for convenience.
           ENV GRADLE_ROOT=/home/dev/opt/gradle
