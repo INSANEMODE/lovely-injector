@@ -78,6 +78,8 @@ jobs:
         target:
           - x86_64-unknown-linux-gnu
           - aarch64-unknown-linux-gnu
+          - aarch64-linux-android
+          - armv7-linux-androideabi
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -87,6 +89,45 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           target: ${{ matrix.target }}
+      - name: Install Anroid ADK
+        run: |
+          # Set an environment variable for convenience.
+          ENV GRADLE_ROOT=/home/dev/opt/gradle
+
+          RUN mkdir -p ${GRADLE_ROOT}
+          RUN wget https://github.com/gradle/gradle-distributions/releases/download/v8.12.0/gradle-8.12-bin.zip -O gradle-8.12-bin.zip \
+            && sha256sum gradle-8.12-bin.zip \
+            && echo "7a00d51fb93147819aab76024feece20b6b84e420694101f276be952e08bef03  gradle-8.12-bin.zip" | sha256sum -c - \
+            && unzip gradle-8.12-bin.zip -d ${GRADLE_ROOT} \
+            && rm gradle-8.12-bin.zip
+
+          # Add the relevant directories to the $PATH.
+          ENV PATH=${PATH}:${GRADLE_ROOT}/gradle-8.12/bin
+          # Set the ${ANDROID_HOME} variable, so that the tools can find our installation.
+          # See https://developer.android.com/studio/command-line/variables#envar.
+          ENV ANDROID_HOME=/home/dev/opt/android-sdk
+          
+          # Download and extract the command-line tools into ${ANDROID_HOME}.
+          RUN mkdir -p ${ANDROID_HOME}
+          RUN wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+                  -O ${HOME}/commandlinetools-linux-11076708_latest.zip \
+              && sha256sum commandlinetools-linux-11076708_latest.zip \
+              && echo "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258 commandlinetools-linux-11076708_latest.zip" | sha256sum -c - \
+              && unzip commandlinetools-linux-11076708_latest.zip -d ${ANDROID_HOME}/cmdline-tools \
+              && rm commandlinetools-linux-11076708_latest.zip
+          
+          # Add the relevant directories to the $PATH.
+          ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin:${ANDROID_HOME}/platform-tools
+          
+          echo yes~|sdkmanager --licenses
+          RUN yes | sdkmanager --licenses \
+              && sdkmanager --verbose \
+                  "build-tools;34.0.0" \
+                  "ndk;27.2.12479018" \
+                  "platforms;android-35"
+          ENV NDK_HOME=${ANDROID_HOME}/ndk/27.2.12479018
+          echo "SDKROOT=${ANDROID_HOME}/ndk/27.2.12479018" >> $GITHUB_ENV
+
 
       # - name: Install Mac SDK
       #   run: |
