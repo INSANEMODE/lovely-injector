@@ -1,3 +1,4 @@
 [workspace]
 resolver = "2"
-members = ["crates/*"]
+# members = ["crates/*"]
+members = ["crates/lovely-core", "lovely-unix"]
