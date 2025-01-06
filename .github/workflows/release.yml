@@ -103,6 +103,8 @@ jobs:
 
       - name: Build
         run: |
+         export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.2.12479018
+         export PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
          #export TARGET_CC=/usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang
          export CC_aarch64_linux_android=/usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang
          export CXX_aarch64_linux_android=/usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang++
