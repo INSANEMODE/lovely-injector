@@ -80,8 +80,8 @@ jobs:
         run: |
           pip3 install cargo-zigbuild
           
-      - name: Modify Rust Toolchain
-        run: rustup target add armv7-linux-androideabi aarch64-linux-android --toolchain nightly
+      # - name: Modify Rust Toolchain
+      #   run: rustup target add armv7-linux-androideabi aarch64-linux-android --toolchain nightly
       - name: Verify Rust Toolchain
         run: rustup show
       - name: Verify Targets
