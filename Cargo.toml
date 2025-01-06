@@ -1,4 +1,4 @@
 [workspace]
 resolver = "2"
 # members = ["crates/*"]
-members = ["crates/lovely-core", "lovely-unix"]
+members = ["crates/lovely-core", "crates/lovely-unix"]
