@@ -10,6 +10,11 @@ crate-type = ["cdylib"]
 [dependencies]
 lovely-core = { version ="0.6.0", path = "../lovely-core" }
 
+itertools = "0.13.0"
+libc = "0.2.141"
+once_cell = "1.19.0"
+widestring = "1.0.2"
+version = "0.54.0"
 
 #[cfg(target_os = "windows")]
 [dependencies.retour]
@@ -18,11 +23,6 @@ features = ["static-detour"]
 
 #[cfg(target_os = "windows")]
 [dependencies.windows]
-itertools = "0.13.0"
-libc = "0.2.141"
-once_cell = "1.19.0"
-widestring = "1.0.2"
-version = "0.54.0"
 features = [
     "Win32_System_Console",
     "Win32_System",
