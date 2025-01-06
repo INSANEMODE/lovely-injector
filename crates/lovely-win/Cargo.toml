@@ -15,9 +15,7 @@ libc = "0.2.141"
 once_cell = "1.19.0"
 widestring = "1.0.2"
 version = "0.54.0"
-#[cfg(target_os = "windows")]
-[dependencies.lovely-win]
-path = "../lovely-win"
+
 features = [
     "Win32_System_Console",
     "Win32_System",
@@ -30,6 +28,10 @@ features = [
     "Win32_Security",
     "Win32_UI_WindowsAndMessaging",
 ]
+#[cfg(target_os = "windows")]
+[dependencies.lovely-win]
+path = "../lovely-win"
+
 #[cfg(target_os = "windows")]
 [dependencies.retour]
 git = "https://github.com/Hpmason/retour-rs.git"
