@@ -13,8 +13,3 @@ lovely-core = { version ="0.6.0", path = "../lovely-core" }
 once_cell = "1.19.0"
 ctor = "0.2.7"
 
-[target.aarch64-linux-android]
-linker = "/home/dev/opt/android-sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang"
-
-[target.armv7-linux-androideabi]
-linker = "/home/dev/opt/android-sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi35-clang"
