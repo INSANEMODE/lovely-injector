@@ -99,7 +99,7 @@ jobs:
         run: rustup target list --installed
 
       - name: Build
-        run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release -C link-arg=--sysroot=$ANDROID_SDK_ROOT/ndk/27.2.12479018/platforms/android-35/arch-arm64
+        run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release -- -C link-arg=--sysroot=$ANDROID_SDK_ROOT/ndk/27.2.12479018/platforms/android-35/arch-arm64
 
       - name: Compress tar.gz
         run: |
