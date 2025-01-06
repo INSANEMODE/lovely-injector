@@ -98,8 +98,13 @@ jobs:
       - name: Verify Targets
         run: rustup target list --installed
 
+      # - name: Build
+      #   run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release -- -C link-arg=--sysroot=$ANDROID_SDK_ROOT/ndk/27.2.12479018/platforms/android-35/arch-arm64
+
       - name: Build
-        run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release -- -C link-arg=--sysroot=$ANDROID_SDK_ROOT/ndk/27.2.12479018/platforms/android-35/arch-arm64
+        run: |
+          export RUSTFLAGS="-C link-arg=--sysroot=/usr/local/lib/android/sdk/ndk/27.2.12479018/platforms/android-35/arch-arm64"
+          cargo zigbuild --verbose --target aarch64-linux-android --package lovely-unix --release
 
       - name: Compress tar.gz
         run: |
