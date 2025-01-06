@@ -74,7 +74,8 @@ jobs:
         uses: android-actions/setup-android@v3
       - name: Install NDK
         run: sdkmanager "ndk;27.2.12479018"
-
+      - name: Check SDK
+        run: ls -a $ANDROID_SDK_ROOT;ls -a $ANDROID_SDK_ROOT/ndk
       - name: Setup toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -97,20 +98,20 @@ jobs:
       - name: Verify Targets
         run: rustup target list --installed
 
-      - name: Build
-        run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release
+      # - name: Build
+      #   run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release
 
-      - name: Compress tar.gz
-        run: |
-          cp ./crates/lovely-unix/run_lovely_linux.sh ./target/${{ matrix.target }}/release/
-          cd ./target/${{ matrix.target }}/release/
-          tar czfv lovely-${{ matrix.target }}.tar.gz liblovely.so run_lovely_linux.sh
-          mv "lovely-${{ matrix.target }}.tar.gz" ${{ github.workspace }}
+      # - name: Compress tar.gz
+      #   run: |
+      #     cp ./crates/lovely-unix/run_lovely_linux.sh ./target/${{ matrix.target }}/release/
+      #     cd ./target/${{ matrix.target }}/release/
+      #     tar czfv lovely-${{ matrix.target }}.tar.gz liblovely.so run_lovely_linux.sh
+      #     mv "lovely-${{ matrix.target }}.tar.gz" ${{ github.workspace }}
           
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.target }} Build
-          path: |
-            lovely-${{ matrix.target }}.tar.gz
+      # - name: Upload Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ matrix.target }} Build
+      #     path: |
+      #       lovely-${{ matrix.target }}.tar.gz
 
