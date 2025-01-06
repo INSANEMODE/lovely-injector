@@ -10,18 +10,29 @@ use lovely_core::LOVELY_VERSION;
 
 use once_cell::sync::Lazy;
 use once_cell::sync::OnceCell;
+
+// Use Windows-specific crates only on Windows
+#[cfg(target_os = "windows")]
 use retour::static_detour;
+#[cfg(target_os = "windows")]
 use widestring::U16CString;
+#[cfg(target_os = "windows")]
 use windows::core::{s, w, PCWSTR};
+#[cfg(target_os = "windows")]
 use windows::Win32::Foundation::{HINSTANCE, HWND};
+#[cfg(target_os = "windows")]
 use windows::Win32::System::Console::{AllocConsole, SetConsoleTitleW};
+#[cfg(target_os = "windows")]
 use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
+#[cfg(target_os = "windows")]
 use windows::Win32::UI::WindowsAndMessaging::{MessageBoxW, MESSAGEBOX_STYLE};
 
 static RUNTIME: OnceCell<Lovely> = OnceCell::new();
 
+// Only define detours for Windows
+#[cfg(target_os = "windows")]
 static_detour! {
-    pub static LuaLoadbufferx_Detour: unsafe extern "C" fn(*mut LuaState, *const u8, isize, *const u8,*const u8) -> u32;
+    pub static LuaLoadbufferx_Detour: unsafe extern "C" fn(*mut LuaState, *const u8, isize, *const u8, *const u8) -> u32;
 }
 
 static WIN_TITLE: Lazy<U16CString> =
