@@ -14,72 +14,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        # Yes, this is the lazy way of doing it. Am I lazy? Yes.
-      # - name: Create draft release
-      #   #env:
-      #     ##GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     echo "### [Install guide](https://github.com/ethangreen-dev/lovely-injector?tab=readme-ov-file#manual-installation)" >> NOTE.md
-      #     echo "|OS|Download|" >> NOTE.md
-      #     echo "|--|--|" >> NOTE.md
-      #     echo "|Windows|[lovely-x86_64-pc-windows-msvc.zip](https://github.com/ethangreen-dev/lovely-injector/releases/download/${{ github.ref_name }}/lovely-x86_64-pc-windows-msvc.zip)|" >> NOTE.md
-      #     echo "|Mac (Arm)|[lovely-aarch64-apple-darwin.tar.gz](https://github.com/ethangreen-dev/lovely-injector/releases/download/${{ github.ref_name }}/lovely-aarch64-apple-darwin.tar.gz)|" >> NOTE.md
-      #     echo "|Mac (x86)|[lovely-x86_64-apple-darwin.tar.gz](https://github.com/ethangreen-dev/lovely-injector/releases/download/${{ github.ref_name }}/lovely-x86_64-apple-darwin.tar.gz)|" >> NOTE.md
 
-      #     gh release create ${{ github.ref_name }} \
-      #     --title "${{ github.ref_name }}" \
-      #     --draft  \
-      #     --generate-notes \
-      #     --notes-file NOTE.md \
 
-  build-windows:
-    needs: prepare
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        target:
-          - x86_64-pc-windows-msvc
+  # build-windows:
+  #   needs: prepare
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       target:
+  #         - x86_64-pc-windows-msvc
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          target: ${{ matrix.target }}
-      - name: Setup Cache
-        uses: Swatinem/rust-cache@v2
+  #     - name: Setup toolchain
+  #       uses: dtolnay/rust-toolchain@stable
+  #       with:
+  #         target: ${{ matrix.target }}
+  #     - name: Setup Cache
+  #       uses: Swatinem/rust-cache@v2
         
-      - name: Build
-        run: cargo build --target ${{ matrix.target }} --package lovely-win --release
+  #     - name: Build
+  #       run: cargo build --target ${{ matrix.target }} --package lovely-win --release
 
-      - name: Compress
-        run: |
-          cd ./target/${{ matrix.target }}/release/
-          7z a "lovely-${{ matrix.target }}.zip" version.dll
-          mv "lovely-${{ matrix.target }}.zip" ${{ github.workspace }}
+  #     - name: Compress
+  #       run: |
+  #         cd ./target/${{ matrix.target }}/release/
+  #         7z a "lovely-${{ matrix.target }}.zip" version.dll
+  #         mv "lovely-${{ matrix.target }}.zip" ${{ github.workspace }}
 
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ runner.os }} Build
-          path: |
-            lovely-${{ matrix.target }}.zip
-      # - name: Submit build artifact
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: >-
-      #     gh release upload ${{ github.ref_name }} lovely-${{ matrix.target }}.zip
+  #     - name: Upload Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ runner.os }} Build
+  #         path: |
+  #           lovely-${{ matrix.target }}.zip
 
+  #testing android support
   build-unix:
     needs: prepare
     strategy:
       matrix:
         target:
-          # - x86_64-unknown-linux-gnu
-          # - aarch64-unknown-linux-gnu
           - aarch64-linux-android
           - armv7-linux-androideabi
     runs-on: ubuntu-latest
@@ -96,18 +74,21 @@ jobs:
         run: |
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm cross
-      # - name: Install Mac SDK
-      #   run: |
-      #     curl -L "https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX10.9.sdk.tar.xz" | tar -J -x -C /opt
-      #     curl -L "https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz" | tar -J -x -C /opt
-      #     echo "SDKROOT=/opt/MacOSX11.3.sdk" >> $GITHUB_ENV
+
 
       - name: Install cargo-zigbuild
         run: |
           pip3 install cargo-zigbuild
+          
+      - name: Modify Rust Toolchain
+        run: rustup target add armv7-linux-androideabi aarch64-linux-android --toolchain nightly
+      - name: Verify Rust Toolchain
+        run: rustup show
+      - name: Verify Targets
+        run: rustup target list --installed
 
       - name: Build
-        run: cross zigbuild --target ${{ matrix.target }} --package lovely-unix --release
+        run: cross zigbuild --verbose --target ${{ matrix.target }} --package lovely-unix --release
 
       - name: Compress tar.gz
         run: |
