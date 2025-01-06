@@ -26,7 +26,7 @@ pub static LUA_LIB: Lazy<Library> =
 pub static lua_call: Lazy<Symbol<unsafe extern "C" fn(*mut LuaState, isize, isize)>> =
     Lazy::new(|| unsafe { LUA_LIB.get(b"lua_call").unwrap() });
 
-#[cfg(target_os = "linux")]
+#[cfg(target_os = "linux" ||target_os = "android")]
 pub static LUA_LIB: Lazy<Library> =
     Lazy::new(|| unsafe { Library::new("libluajit-5.1.so.2").unwrap() });
 
