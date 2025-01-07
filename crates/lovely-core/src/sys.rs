@@ -32,7 +32,7 @@ pub static LUA_LIB: Lazy<Library> =
 
 #[cfg(target_os = "android")]
 pub static LUA_LIB: Lazy<Library> =
-    Lazy::new(|| unsafe { Library::new("libluajit-5.1.so.2").unwrap() });
+    Lazy::new(|| unsafe { Library::new("libluajit.so").unwrap() });
 
 pub static lua_pcall: Lazy<
     Symbol<unsafe extern "C" fn(*mut LuaState, isize, isize, isize) -> isize>,
