@@ -59,7 +59,7 @@ jobs:
       matrix:
         target:
           - aarch64-linux-android
-          #- armv7-linux-androideabi
+          - armv7-linux-androideabi
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -115,7 +115,7 @@ jobs:
          # export RUSTFLAGS="-C link-arg=--sysroot=/usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
          # echo $RUSTFLAGS
          # cargo zigbuild --verbose --target aarch64-linux-android --package lovely-unix --release
-         cargo ndk -t aarch64-linux-android -o ./lovely-unix build --release
+         cargo ndk -t ${{ matrix.target }} -o ./lovely-unix build --release
 
       - name: Compress tar.gz
         run: |
