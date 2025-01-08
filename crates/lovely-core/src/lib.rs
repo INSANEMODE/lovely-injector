@@ -68,7 +68,7 @@ impl Lovely {
         };
         
         
-        let mut mod_dir = Path::new("files/save/game/").join(Mods);
+        let mut mod_dir = Path::new("files/save/game/").join("Mods");
 
         let log_dir = mod_dir.join("lovely").join("log");
 
