@@ -152,15 +152,6 @@ impl Lovely {
     /// This function is unsafe because
     /// - It interacts and manipulates memory directly through native pointers
     /// - It interacts, calls, and mutates native lua state through native pointers
-impl Lovely {
-    // Other methods...
-
-    /// Apply patches onto the raw buffer.
-    ///
-    /// # Safety
-    /// This function is unsafe because
-    /// - It interacts and manipulates memory directly through native pointers
-    /// - It interacts, calls, and mutates native lua state through native pointers
     pub unsafe fn apply_buffer_patches(
         &self,
         state: *mut LuaState,
@@ -220,7 +211,7 @@ impl Lovely {
         };
 
         // Write the patched file to the dump directory, maintaining folder structure
-        let dump_dir = Path::new(game_dir + "/patched_mods);
+        let dump_dir = Path::new(game_dir + "/patched_mods");
         let patch_dump = dump_dir.join(&pretty_name);
 
         if let Some(parent) = patch_dump.parent() {
