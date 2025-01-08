@@ -212,7 +212,7 @@ impl Lovely {
         let exe_path = env::current_exe().unwrap();
         let game_dir = exe_path.parent().unwrap();
         // Write the patched file to the dump directory, maintaining folder structure
-        let dump_dir = Path::new(game_dir + "/patched_mods");
+        let dump_dir = Path::new(game_dir).join("patched_files").join("dump");
         let patch_dump = dump_dir.join(&pretty_name);
 
         if let Some(parent) = patch_dump.parent() {
