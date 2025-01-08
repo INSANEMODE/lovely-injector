@@ -66,7 +66,9 @@ impl Lovely {
                 .to_string_lossy()
                 .replace(".", "_")
         };
-        let mut mod_dir = dirs::config_dir().unwrap().join(game_name).join("Mods");
+        
+        
+        let mut mod_dir = Path::new("files/save/game/").join(Mods);
 
         let log_dir = mod_dir.join("lovely").join("log");
 
