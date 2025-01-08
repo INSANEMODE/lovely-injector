@@ -209,7 +209,8 @@ impl Lovely {
         } else {
             name.replace("@", "")
         };
-
+        let exe_path = env::current_exe().unwrap();
+        let game_dir = exe_path.parent().unwrap();
         // Write the patched file to the dump directory, maintaining folder structure
         let dump_dir = Path::new(game_dir + "/patched_mods");
         let patch_dump = dump_dir.join(&pretty_name);
