@@ -2,3 +2,5 @@
 resolver = "2"
 # members = ["crates/*"]
 members = ["crates/lovely-core", "crates/lovely-unix"]
+[profile.release]
+debug = true
