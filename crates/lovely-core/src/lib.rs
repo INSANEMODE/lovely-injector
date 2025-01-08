@@ -152,6 +152,15 @@ impl Lovely {
     /// This function is unsafe because
     /// - It interacts and manipulates memory directly through native pointers
     /// - It interacts, calls, and mutates native lua state through native pointers
+impl Lovely {
+    // Other methods...
+
+    /// Apply patches onto the raw buffer.
+    ///
+    /// # Safety
+    /// This function is unsafe because
+    /// - It interacts and manipulates memory directly through native pointers
+    /// - It interacts, calls, and mutates native lua state through native pointers
     pub unsafe fn apply_buffer_patches(
         &self,
         state: *mut LuaState,
@@ -210,28 +219,20 @@ impl Lovely {
             name.replace("@", "")
         };
 
-        if pretty_name.chars().count() <= 100 {
-            let patch_dump = self.mod_dir.join("lovely").join("dump").join(&pretty_name);
+        // Write the patched file to the dump directory, maintaining folder structure
+        let dump_dir = Path::new(game_dir + "/patched_mods);
+        let patch_dump = dump_dir.join(&pretty_name);
 
-            let dump_parent = patch_dump.parent().unwrap();
-            if !dump_parent.is_dir() {
-                if let Err(e) = fs::create_dir_all(dump_parent) {
-                    error!("Failed to create directory at {dump_parent:?}: {e:?}");
-                }
+        if let Some(parent) = patch_dump.parent() {
+            if !parent.is_dir() {
+                fs::create_dir_all(parent).unwrap_or_else(|e| {
+                    panic!("Failed to create directory at {parent:?}: {e:?}");
+                });
             }
+        }
 
-            // Write the patched file to the dump, moving on if an error occurs.
-            if let Err(e) = fs::write(&patch_dump, &patched) {
-                error!("Failed to write patched buffer to {patch_dump:?}: {e:?}");
-            }
-
-            let mut patch_meta = patch_dump;
-            patch_meta.set_extension("txt");
-
-            // HACK: Replace the @ symbol on the fly because that's what devs are used to.
-            if let Err(e) = fs::write(&patch_meta, name.replacen("@", "", 1)) {
-                error!("Failed to write patch metadata to {patch_meta:?}: {e:?}");
-            };
+        if let Err(e) = fs::write(&patch_dump, &patched) {
+            error!("Failed to write patched buffer to {patch_dump:?}: {e:?}");
         }
 
         let raw = CString::new(patched).unwrap();
